@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>财富心理测评 · 靓姐的财富认知</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#C4972A;--gold-light:#E2B84A;--gold-dim:#8A6A1E;
+  --bg:#080808;--s1:#111111;--s2:#1A1A1A;--s3:#242424;
+  --text:#EDE8DC;--text2:#B0A890;--text3:#6A6458;
+  --border:#2A2820;--red:#C45040;
+  --r:12px;
+}
+html{background:var(--bg);}
+body{
+  font-family:'PingFang SC','Hiragino Sans GB','STSong','Microsoft YaHei',serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  line-height:1.8;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--gold);transition:width .4s ease;z-index:100;
+  box-shadow:0 0 8px var(--gold);
+}
+
+/* ── SCREENS ── */
+.screen{
+  display:none;min-height:100vh;padding:0;
+  animation:fadeIn .5s ease forwards;
+}
+.screen.active{display:flex;flex-direction:column;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── INTRO ── */
+#s-intro{
+  justify-content:flex-start;padding:0;
+  background:var(--bg);
+}
+.intro-header{
+  padding:48px 28px 32px;
+  border-bottom:1px solid var(--border);
+}
+.brand-tag{
+  font-size:11px;letter-spacing:.15em;color:var(--gold-dim);
+  text-transform:uppercase;margin-bottom:20px;
+}
+.intro-title{
+  font-size:26px;font-weight:600;line-height:1.35;
+  color:var(--text);margin-bottom:10px;
+}
+.intro-subtitle{
+  font-size:14px;color:var(--text2);letter-spacing:.05em;
+}
+.intro-body{
+  padding:28px 28px 0;flex:1;
+  overflow-y:auto;
+}
+.intro-body p{
+  font-size:15px;color:var(--text2);margin-bottom:16px;
+  line-height:1.85;
+}
+.intro-body strong{
+  color:var(--text);font-weight:600;
+}
+.intro-body .note{
+  background:var(--s2);border-left:2px solid var(--gold-dim);
+  padding:16px 18px;border-radius:0 var(--r) var(--r) 0;
+  margin:24px 0;
+}
+.intro-body .note p{font-size:14px;color:var(--text2);margin:0;}
+.intro-footer{
+  padding:24px 28px 40px;
+  border-top:1px solid var(--border);
+  margin-top:24px;
+}
+.intro-meta{font-size:12px;color:var(--text3);margin-bottom:20px;}
+.intro-meta span{margin-right:16px;}
+.btn-start{
+  width:100%;padding:16px;
+  background:var(--gold);color:#000;
+  font-size:16px;font-weight:700;
+  border:none;border-radius:var(--r);
+  cursor:pointer;letter-spacing:.1em;
+  transition:opacity .2s;
+}
+.btn-start:active{opacity:.8;}
+
+/* ── QUIZ ── */
+#s-quiz{
+  justify-content:space-between;
+  padding:60px 0 0;
+}
+.quiz-header{
+  padding:0 24px 20px;
+  border-bottom:1px solid var(--border);
+}
+.q-group{
+  font-size:11px;letter-spacing:.1em;color:var(--gold-dim);
+  margin-bottom:6px;
+}
+.q-counter{
+  font-size:12px;color:var(--text3);
+}
+.quiz-body{
+  flex:1;padding:28px 24px;
+  overflow-y:auto;
+}
+.q-text{
+  font-size:18px;font-weight:500;line-height:1.55;
+  color:var(--text);margin-bottom:28px;
+}
+.options{display:flex;flex-direction:column;gap:10px;}
+.opt{
+  padding:14px 16px;
+  background:var(--s2);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  font-size:15px;color:var(--text2);
+  cursor:pointer;
+  transition:all .2s;
+  text-align:left;line-height:1.55;
+  -webkit-tap-highlight-color:transparent;
+}
+.opt:active{background:var(--s3);}
+.opt.selected{
+  border-color:var(--gold);
+  background:rgba(196,151,42,.12);
+  color:var(--text);
+}
+.opt-label{
+  color:var(--gold-dim);font-weight:600;
+  margin-right:8px;font-size:14px;
+}
+.quiz-footer{
+  padding:16px 24px 36px;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.btn-back{
+  padding:12px 20px;background:none;
+  border:1.5px solid var(--border);
+  border-radius:var(--r);color:var(--text3);
+  font-size:14px;cursor:pointer;
+  transition:all .2s;
+}
+.btn-back:active{border-color:var(--gold-dim);}
+.btn-next{
+  padding:12px 28px;
+  background:var(--gold);color:#000;
+  border:none;border-radius:var(--r);
+  font-size:15px;font-weight:700;
+  cursor:pointer;opacity:.4;
+  transition:opacity .2s;
+}
+.btn-next.ready{opacity:1;}
+.btn-next:active{opacity:.75;}
+
+/* ── LOADING ── */
+#s-loading{
+  justify-content:center;align-items:center;
+  gap:32px;padding:40px;text-align:center;
+}
+.loading-icon{
+  width:56px;height:56px;
+  border:2px solid var(--border);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:16px;color:var(--text2);}
+.loading-sub{font-size:13px;color:var(--text3);margin-top:8px;}
+
+/* ── RESULT ── */
+#s-result{
+  padding:0;justify-content:flex-start;
+}
+.result-hero{
+  padding:48px 28px 36px;
+  background:linear-gradient(180deg,var(--s1) 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+}
+.result-label{
+  font-size:11px;letter-spacing:.2em;color:var(--gold-dim);
+  margin-bottom:16px;
+}
+.result-mode{
+  font-size:32px;font-weight:700;
+  color:var(--gold-light);
+  letter-spacing:.05em;margin-bottom:8px;
+}
+.result-sub{
+  font-size:14px;color:var(--text2);
+}
+.result-tag{
+  display:inline-block;
+  background:rgba(196,151,42,.15);
+  border:1px solid var(--gold-dim);
+  color:var(--gold);
+  font-size:12px;padding:4px 12px;
+  border-radius:20px;margin-top:12px;
+  letter-spacing:.05em;
+}
+.result-body{padding:0 0 40px;}
+.r-section{
+  padding:28px 28px 0;
+}
+.r-section + .r-section{
+  border-top:1px solid var(--border);
+  margin-top:0;
+}
+.r-title{
+  font-size:11px;letter-spacing:.15em;color:var(--gold-dim);
+  margin-bottom:16px;
+}
+.r-headline{
+  font-size:18px;font-weight:600;line-height:1.5;
+  color:var(--gold-light);margin-bottom:20px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.r-text{
+  font-size:15px;color:var(--text2);
+  line-height:1.85;margin-bottom:12px;
+  white-space:pre-wrap;
+}
+.r-text strong,.r-text b{color:var(--text);font-weight:600;}
+.weld-box{
+  background:var(--s2);
+  border-left:2px solid var(--gold-dim);
+  padding:20px 20px;margin:24px 0;
+  border-radius:0 var(--r) var(--r) 0;
+}
+.weld-label{
+  font-size:11px;color:var(--gold-dim);letter-spacing:.1em;
+  margin-bottom:12px;
+}
+.weld-text{
+  font-size:14px;color:var(--text2);line-height:1.85;
+  white-space:pre-wrap;
+}
+.cause-item{
+  margin-bottom:16px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+.cause-item:last-child{border:none;padding-bottom:0;}
+.cause-num{
+  font-size:11px;color:var(--gold-dim);
+  letter-spacing:.1em;margin-bottom:8px;
+}
+.trigger-dir{
+  font-size:12px;font-weight:600;
+  letter-spacing:.1em;margin-bottom:8px;
+  padding:4px 10px;border-radius:4px;
+  display:inline-block;
+}
+.trigger-greed{background:rgba(196,151,42,.15);color:var(--gold);}
+.trigger-fear{background:rgba(196,80,64,.15);color:var(--red);}
+.action-box{
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;margin-top:8px;
+}
+.action-rule{
+  font-size:12px;font-weight:600;color:var(--gold-dim);
+  letter-spacing:.1em;margin-bottom:12px;
+}
+.disclaimer-box{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;
+  margin-top:8px;
+}
+.disclaimer-text{
+  font-size:13px;color:var(--text3);line-height:1.75;
+  font-style:italic;
+}
+.exit-text{
+  font-size:15px;color:var(--text2);line-height:1.85;
+  white-space:pre-wrap;
+}
+.cta-section{
+  padding:32px 28px 52px;
+  border-top:1px solid var(--border);
+  margin-top:8px;
+}
+.cta-intro{
+  font-size:15px;color:var(--text2);line-height:1.8;
+  margin-bottom:24px;white-space:pre-wrap;
+}
+.cta-divider{
+  display:flex;gap:12px;margin-bottom:24px;
+}
+.cta-card{
+  flex:1;padding:16px;
+  border:1px solid var(--border);
+  border-radius:var(--r);text-align:center;
+}
+.cta-card.active{border-color:var(--gold);background:rgba(196,151,42,.08);}
+.cta-price{font-size:22px;font-weight:700;color:var(--gold);}
+.cta-desc{font-size:12px;color:var(--text3);margin-top:4px;}
+.cta-arrow{font-size:14px;color:var(--text3);margin-bottom:12px;text-align:center;}
+.btn-cta{
+  width:100%;padding:18px;
+  background:var(--gold);color:#000;
+  font-size:17px;font-weight:700;
+  border:none;border-radius:var(--r);
+  cursor:pointer;letter-spacing:.08em;
+  transition:opacity .2s;
+}
+.btn-cta:active{opacity:.75;}
+.btn-restart{
+  width:100%;padding:14px;
+  background:none;border:1.5px solid var(--border);
+  border-radius:var(--r);color:var(--text3);
+  font-size:14px;cursor:pointer;margin-top:12px;
+}
+
+/* ── ENDING ── */
+.ending-section{
+  padding:32px 28px;
+  border-top:1px solid var(--border);
+  background:var(--s1);
+}
+.ending-text{
+  font-size:14px;color:var(--text3);line-height:1.85;
+  white-space:pre-wrap;
+}
+.ending-close{
+  font-size:14px;color:var(--gold-dim);
+  font-style:italic;margin-top:16px;
+}
+
+/* scrollbar */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);}
+</style>
+</head>
+<body>
+<div id="progress-bar" style="width:0"></div>
+
+<!-- INTRO -->
+<div class="screen active" id="s-intro">
+  <div class="intro-header">
+    <div class="brand-tag">靓姐的财富认知 · 不预测市场，只配置结构</div>
+    <div class="intro-title">财富心理测评</div>
+    <div class="intro-subtitle">你和钱之间，到底发生过什么</div>
+  </div>
+  <div class="intro-body">
+    <p>你大概已经学过不少投资的东西了。</p>
+    <p>什么是再平衡，什么是资产配置，不该追涨杀跌，要长期持有——这些你都知道。可能还读过几本书，上过几门课，关注过几个讲得不错的人。</p>
+    <p>但有一件事可能一直没有人认真问过你：<strong>你照着做了吗？</strong></p>
+    <p>不是在责问你。是因为大多数人的答案是——没有，或者没有完全做到。知道是一回事，做到是另一回事。这中间有一道gap，很多人在那里卡了很多年，说不清楚为什么。</p>
+    <p>这个测评想问的，就是那道gap里面有什么。</p>
+    <div class="note">
+      <p>不是测你懂多少，不是给你打分，没有正确答案。它只是一面镜子，帮你看清楚你和钱之间，到底发生过什么。</p>
+    </div>
+    <p>如果你一直觉得"我明明懂，但就是做不对"，先别急着否定自己。先来看看镜子里是什么。</p>
+  </div>
+  <div class="intro-footer">
+    <div class="intro-meta">
+      <span>共18题</span>
+      <span>约5分钟</span>
+      <span>结果即时呈现</span>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">开始测评</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="s-quiz">
+  <div class="quiz-header">
+    <div class="q-group" id="q-group-label"></div>
+    <div class="q-counter" id="q-counter"></div>
+  </div>
+  <div class="quiz-body">
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="q-options"></div>
+  </div>
+  <div class="quiz-footer">
+    <button class="btn-back" id="btn-back" onclick="prevQ()">← 上一题</button>
+    <button class="btn-next" id="btn-next" onclick="nextQ()">下一题</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="screen" id="s-loading">
+  <div class="loading-icon"></div>
+  <div>
+    <div class="loading-text">正在分析你的财富心理模式…</div>
+    <div class="loading-sub">基于你的18个答案，识别决策失真入口</div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="s-result">
+  <div id="result-content"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DATA: QUESTIONS
+// ══════════════════════════════════════
+const QUESTIONS = [
+  {
+    group:'校准题',
+    text:'这笔你在管的钱，主要是什么性质的？',
+    opts:['完全是我自己赚的，我自己做主','是我和家人共同的，但主要由我决策','主要是家里的钱，我负责管理','说不清楚，各种来源都有']
+  },
+  {
+    group:'校准题',
+    text:'你目前的状态？',
+    opts:['有工作或事业，收入来自职业','全职在家，主要精力在家庭','做过生意，现在管资产为主','其他']
+  },
+  {
+    group:'第一组 · 钱的来源故事',
+    text:'你现在手里的这笔钱，主要是怎么来的？',
+    opts:['工作收入一点点攒下来的','做生意或职业发展，某个阶段收入跳跃了','投资或投机赚到的——股票、基金、或某段行情','房产升值','家族传承或配偶带来的','几种都有']
+  },
+  {
+    group:'第一组 · 钱的来源故事',
+    text:'这笔钱的来历，你有没有跟人完整说过？',
+    opts:['说过，没什么好隐瞒的','大概说过，但某些细节不太提','基本不说，这是私事','说不清楚——我自己也没认真整理过它是怎么来的']
+  },
+  {
+    group:'第一组 · 钱的来源故事',
+    text:'如果账户明天少了一半，你最可能做的第一件事是什么？',
+    opts:['什么都不做，等着看','马上打开账户，查是哪些仓位出了问题','联系一个懂投资的人，问他怎么看','先不看——看了只会更难受']
+  },
+  {
+    group:'第二组 · 钱和"我"的关系',
+    text:'上一次市场明显下跌，你在头两天实际做了什么？',
+    opts:['没动，按原来的计划','反复看账户，但没有操作','减了仓——先出来，等稳了再说','加仓了，觉得跌下来反而是机会','基本没关注，我不常盯账户']
+  },
+  {
+    group:'第二组 · 钱和"我"的关系',
+    text:'你上一次后悔某个投资决定，主要是因为什么？',
+    opts:['进场时机不对','出场太早或者太晚','当时听了别人的建议，没有按自己的判断来','情绪影响了判断，事后知道当时不应该那样做','我不太记得有认真后悔过']
+  },
+  {
+    group:'第二组 · 钱和"我"的关系',
+    text:'下面哪句话最接近你现在对自己财务状态的真实感受？',
+    opts:['我大概知道自己有多少钱，但不太愿意认真细算','我很清楚，但不确定现在的配置方式是不是对的','我知道应该怎么做，但真正执行起来总是打折扣','我有点怕认真面对这件事——认真看了可能更焦虑']
+  },
+  {
+    group:'第二组 · 钱和"我"的关系',
+    text:'你学过的投资方法，和你实际在做的，差距有多大？',
+    opts:['基本一致，我能做到知行合一','有差距，但我知道是什么原因','差距很大，但我说不清楚为什么','我已经不太用那些方法了——实际操作是另一套逻辑']
+  },
+  {
+    group:'第三组 · 家族和钱',
+    text:'你的投资账户里，大概有多少比例是"家里有急事随时可能要动"的？',
+    opts:['几乎没有，我的钱有明确分层','大概两三成','将近一半','大部分都算——我没有专门区分过']
+  },
+  {
+    group:'第三组 · 家族和钱',
+    text:'你上一次做一笔较大的投资决定，有没有需要考虑家人的情况？',
+    opts:['没有，这是我自己的钱，我自己决定','没有专门说，但决定的时候有把他们考虑进去','跟家人提过，他们的意见影响了我的决定','提过，但最后还是按我自己的判断来']
+  },
+  {
+    group:'第三组 · 家族和钱',
+    text:'你有没有一个数字或者状态，是你心里觉得"到这里就够了"的？',
+    opts:['有，我很清楚那个数字是多少','有感觉，但说不出具体是多少','没有——我一直觉得还不够，不确定什么叫够','我没想过这个问题']
+  },
+  {
+    group:'第四组 · 行动模式',
+    text:'你上一次在市场涨势很好的时候追进去，事后你把结果主要归结为什么？',
+    opts:['判断对了，或者判断错了——是我自己的原因','市场整体走势决定的，和我的判断关系不大','我刚好那段时间没有频繁操作，结果反而还行','运气成分比较大','我没有追涨的习惯，这种情况没发生过']
+  },
+  {
+    group:'第四组 · 行动模式',
+    text:'你现在的投资组合里，有多少比例是"当初打算长期持有、但现在不确定要不要继续拿着"的？',
+    opts:['几乎没有，每一笔我都清楚为什么还拿着','大概两三成','将近一半','大部分都是这种状态——我说不清楚为什么还拿着']
+  },
+  {
+    group:'第四组 · 行动模式',
+    text:'你设定过投资计划吗？如果设定过，最常在哪里失守？',
+    opts:['我没有设定过明确的投资计划','设定过，但选择阶段就开始犹豫，迟迟不动手','选进去了，但持有过程中扛不住，中途改变了','下跌的时候忍不住卖出，等涨回来再后悔','我的计划基本执行得下来']
+  },
+  {
+    group:'第五组 · 盲区模式',
+    text:'你有没有"想好了但没动手"的投资，后来发现……',
+    opts:['涨了——我没赶上','跌了——还好没进','一直没动，到现在还在观望','这种情况我很少遇到，想好了我会动手']
+  },
+  {
+    group:'第五组 · 盲区模式',
+    text:'如果让你现在向一个朋友解释，你为什么持有目前这些资产——你能说清楚吗？',
+    opts:['能，每一笔我都有自己的逻辑','大部分能，有几笔当时跟着建议进的，说不太清楚','大部分说不太清楚，当时进场的理由现在想不起来了','我没认真想过这个问题']
+  },
+  {
+    group:'第五组 · 盲区模式',
+    text:'你的投资里，有没有你愿意在朋友圈或饭局上聊的，和"不太好意思主动提"的区别？',
+    opts:['没有，我不分这个','有一点——某些仓位我不太主动提','有，有些仓位听起来有眼光，有些显得太普通','我基本不跟别人聊投资这件事']
+  }
+];
+
+// ══════════════════════════════════════
+// DATA: SCORING MATRIX (index 0 = 题1 = Q[2])
+// Keys: 掌控 补偿 恐惧 暴富 家族 依附 完美 表演
+// ══════════════════════════════════════
+const SM = [
+  // 题1: 钱的来源
+  [{补偿:1},{掌控:2},{暴富:2},{暴富:1},{依附:2},{}],
+  // 题2: 来历说过没
+  [{},{补偿:1},{补偿:2},{依附:1}],
+  // 题3: 少一半第一件事 ★hardtrigger
+  [{完美:1},{掌控:3},{依附:3},{恐惧:3}],
+  // 题4: 市场下跌头两天
+  [{掌控:1},{补偿:2},{恐惧:2},{暴富:2},{恐惧:1}],
+  // 题5: 后悔原因
+  [{掌控:1},{完美:2},{依附:2},{补偿:2},{表演:1}],
+  // 题6: 财务状态感受
+  [{恐惧:1,家族:1},{掌控:2},{完美:1,补偿:1},{恐惧:2}],
+  // 题7: 学的和做的差距
+  [{掌控:2},{掌控:1,完美:1},{补偿:1,依附:1},{暴富:2}],
+  // 题8: 随时可动比例
+  [{掌控:1},{家族:1},{家族:2},{家族:2,恐惧:1}],
+  // 题9: 做决定考虑家人
+  [{掌控:1,表演:1},{家族:2},{依附:1,家族:1},{掌控:1}],
+  // 题10: 够了的数字
+  [{掌控:1},{完美:1,家族:1},{补偿:2,暴富:1},{依附:1,恐惧:1}],
+  // 题11: 追涨归因
+  [{掌控:2,补偿:1},{恐惧:2},{完美:2},{依附:2},{恐惧:1}],
+  // 题12: 不确定要不要拿
+  [{掌控:2},{完美:1},{暴富:2,补偿:1},{依附:2,恐惧:1}],
+  // 题13: 计划失守 ★hardtrigger
+  [{依附:1,恐惧:1},{完美:3},{补偿:1,恐惧:1},{恐惧:2},{掌控:1}],
+  // 题14: 想好没动手 ★hardtrigger
+  [{完美:2,暴富:1},{完美:1,恐惧:1},{完美:3},{掌控:1}],
+  // 题15: 能解释持仓
+  [{掌控:2},{依附:1},{依附:2},{依附:2,恐惧:1}],
+  // 题16: 说得出口区别 ★special
+  [{},{表演:2},{表演:3},{恐惧:1}]
+];
+const HARD_Q = [4,14,15]; // 0-indexed in QUESTIONS array → 题3,题13,题14
+const MODES = ['掌控','补偿','恐惧','暴富','家族','依附','完美','表演'];
+const MODE_FULL = {掌控:'掌控型',补偿:'补偿型',恐惧:'恐惧型',暴富:'暴富后遗症型',家族:'家族负重型',依附:'依附型',完美:'完美主义型',表演:'表演型'};
+
+// ══════════════════════════════════════
+// DATA: REPORTS
+// ══════════════════════════════════════
+const REPORTS = {
+掌控:{
+  headline:'你不是输给了市场。\n你输给了一件事：你最擅长的那套东西，在这里没用。',
+  snapshot:`很多落到这个模式的人，做事情都是有一套的。
+
+不是那种随便看看就动手的——会研究，会分析，会想清楚了再走。这套东西在职业生涯里通常是真实有效的，甚至正是靠它走到今天这个位置。不是运气好，是真的有能力。
+
+然后，你把同样的认真带进了市场。
+
+你做了功课。看了报告，建了框架，追踪了数据，逻辑想得比大多数人都严密。你付出的时间和精力，配得上一个很好的结果。
+
+问题不是这套东西不高级。问题是，它被带进了一个**不按这套逻辑结算**的地方。
+
+所以你会发现一件很不舒服的事：你这些年收益最好的仓位，有多少，其实是买了之后没怎么管的？
+
+很多人知道答案。只是平时不太愿意把它想得太清楚。`,
+  evidence:`你在这几题上的选择高度一致：
+· 题5  你选了"马上查仓位"——第一反应是主动介入，不是等待
+· 题9  你选了"基本一致"或"有差距但知道原因"——你对自己的系统有把握
+· 题13 你把结果归结为自己的判断——无论对错，你默认是自己在掌盘
+
+这三个答案放在一起，说的是同一件事：你的系统默认"我的介入使结果更好"。`,
+  causes:[
+    ['职业逻辑的成功迁移失败','你在职业生涯里靠"认真→掌控→结果"这套逻辑赢过。那套逻辑是真实有效的，它带你走到今天。但市场不认"你有多认真"这件事，它有自己的运行逻辑，和你的能力没有合同关系。'],
+    ['中国精英文化的能力迁移预设','从孔子的六艺开始，中国精英阶层代代传承了一件事：真正有能力的人，认真对待什么就能做好什么。这个预设在很多领域是对的，在市场里让人持续多操作、多干预，而多操作在统计上是持续减分的。'],
+    ['犯错代价高的成长环境','在"做对了是应该的，做错了才被记住"的环境里长大，会养成一个习惯：多想一步，确定了再动。这个习惯保护过你很多次。但市场里，这个习惯的代价是你永远比该动的时刻晚半拍。']
+  ],
+  causes_note:'这不是你的性格问题，是一套在特定条件下有效的系统，被部署到了不匹配的战场上。',
+  greed:'最危险的不是你迟迟不动手的时候。是你终于动了，然后它涨了。你会坐在那里，看着那个数字，心里出现一个非常具体的念头：要是当时多买一点就好了。你甚至算了——如果多买一倍，现在多多少。那次什么都没发生。但那个念头留下来了。下一次机会来的时候，它又出现了，这次更响——上次少买了，这次应该正常买。再下一次，正常买变成了多买一点。你不是变贪了，是你"下次做得更好"这件事，找到了一个新的方向。',
+  fear:'你研究了很久的一个仓位，某天你发现了一个变量，是你之前没有考虑到的。就一个变量。但它让你整个逻辑体系在心里开始松动。你开始不确定，你开始不舒服，你清了。不是因为行情，是因为你无法持有一个"自己的逻辑有漏洞"的东西。那个仓位后来涨了多少，你查过。',
+  action_intro:'你的介入没有使结果更好。你的不操作，大概率使结果更好。',
+  action:`每个季度，把你主动操作的仓位和你没有动过的仓位，分别计算这一阶段的收益率，列在同一张纸上。
+
+只做这一件事，不需要改变任何行为。
+
+这张纸会告诉你一件比任何人告诉你都更有力量的事：你的介入，到底让结果变好了还是变差了。
+
+不是理论，是你自己的数据。你是那种相信数据的人。让数据说话。`,
+  disclaimer:'如果你在过去一年里能稳定按计划执行、不因逻辑出现细微漏洞就提前离场、做对了也不会想"要是当时多买一点就好了"——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。想想你过去一年里那笔最后悔的操作——你当时的理由是什么，真正出错的地方在哪里。
+
+你这种模式，需要的不是更多提醒，不是更强的自律，是一套**在你不操作的时候也在运转的机器**。
+
+它不需要你的判断，不需要你的情绪，不需要你在最脆弱的那一秒做出正确的决定。它只需要你在清醒的时候提前把规则设计好——然后在你的模式被触发的那一刻，规则替你执行。
+
+你最擅长的是设计系统。这套结构，就是你给自己设计的那个系统。`
+},
+
+补偿:{
+  headline:'你不是在做投资。\n你在用账户解一道从小就没解完的题。',
+  snapshot:`赚钱的时候，你松的不只是一口气。是某个一直盯着你的东西，暂时移开了眼神。
+
+亏钱的时候，难受的不只是钱。是那个声音又回来了——你看，你果然还是不行。
+
+很多走到这个模式的人，回头去看，会认出这样一种感觉：认可好像是有条件的。做好了才被看见，做错了才被记住。**"我必须先证明，才算站得住。"** 这件事，不知道从什么时候开始，变成了一种默认的运行逻辑。
+
+这套逻辑往往也真的带出过结果。它逼着人往前走，逼着人把很多事做成。你走到今天，有一部分就是靠这个。
+
+问题是，市场不是那个会认可你的地方。你再努力，它也不会点头说你做得很好。
+
+更麻烦的是——那个评判的声音，标准还是会动的。赚了，它说这次运气好。亏了，它说你果然不行。永远差一点。
+
+你在市场里，可能同时打着两场仗。第二场，可能从来没有真正赢过。`,
+  evidence:`最直接的信号，是这三个地方：
+· 题6  你选了"反复看账户，但没有操作"——那个反复看，不只是在看行情，更像是在监控那个数字带给你的感受
+· 题7  你选了"情绪影响了判断"——那一刻你不是不知道不对，是知道，但停不下来
+· 题12 你选了"没有，一直觉得还不够，不确定什么叫够"——"够了"这个状态，对你来说像是一直挂在前面的东西，不太真的落得下来
+
+这三个答案放在一起，说的是同一件事：**账户的涨跌，对你来说不只是数字变化。它会很快进入你的自我感受系统。**`,
+  causes:[
+    ['成就驱动的自我认知建构','你这些年建立的自我认知，有相当一部分是用成果支撑的。那套认知是真实的，是有支撑的。但它有一个代价：你从来没有学会，怎么相信自己是值得的，不需要先证明什么。账户进来之后，它加入了这个评分系统。'],
+    ['中国家庭教育里的条件性认可','儒家伦理里没有"你本身就值得被爱"这个概念——有的是通过成就实现的价值，是功能性的人。整整一代人被训练成用成果证明存在感。这不是某个家庭的特例，是集体构造。'],
+    ['早年被否定的关系经历','在"做好了是应该的，做错了才被记住"的环境里，神经系统会对认可信号产生异常的敏感度。这套感应器后来进了账户——涨了是被认可，跌了是被否定。']
+  ],
+  causes_note:'这不是你的毛病，是那套系统在这里找错了应用场景。',
+  greed:'连续做对了几次之后。那个声音暂时安静了，你会想加注——不是因为分析，是因为你不想让那种感觉结束。那一刻最危险，因为它不像贪婪，它像解脱。像那个一直压着你的声音第一次停下来，让你喘了一口气。',
+  fear:'亏损持续的时候。那个数字每天在那里，每天都在说那句话。你割掉它，不是因为判断，是因为你需要让那个声音闭嘴。割完有一种奇怪的平静。但那个声音不在仓位里，割完它还在。',
+  action_intro:'你割亏损仓位，有时候不是在止损，是在清除一个每天都在给你打低分的东西。',
+  action:`每次想割任何一笔亏损仓位之前，先找出你最初买入时写下的理由。
+
+如果你当初没有写，这本身就是信息——你进场的时候没有逻辑，只有感觉。
+
+如果你写了，对照那个理由：逻辑变了，出。只是价格变了，当天冻结，48小时后再看。
+
+这条规矩做的事情只有一件：把"我需要让那个声音闭嘴"和"这笔仓位的逻辑是否还成立"这两个问题，物理性地分开。`,
+  disclaimer:'如果你做投资决定时和自我评价完全无关、亏损只是数字问题不引发任何情绪叠加、赚了也不会有"终于证明了什么"的感觉——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。想想你上一次割肉或者重仓的那一刻——当时真正驱动你的是什么？是逻辑，还是别的什么？
+
+你这种模式，需要的是一套**让账户的涨跌，和你对自己的评价，物理隔开的结构**。
+
+不是靠意志力告诉自己"亏损只是数字"——那句话说了一千遍也没用。而是提前把仓位设计好，让你账户里那部分真正长期运转的钱，根本不在你每天能看见、能触碰的地方。你每天盯着的那个数字，是卫星仓位，是你允许自己折腾的部分。它亏了，难受，但它不代表你这个人。
+
+这套结构，是让那个评判的声音，失去它的裁判席。`
+},
+
+恐惧:{
+  headline:'你的谨慎不是性格。\n是你的身体记住了某一年发生的事。',
+  snapshot:`很多落到这个模式的人，都会慢慢认出一种熟悉的反应。
+
+不是想法先变了，是身体先变了。
+
+账户一波动，那种感觉就回来了——不是普通的焦虑，更像"地基又要动了"。你认识那种感觉，也不想再认识第二次。
+
+所以钱会想放在能看见的地方，放在不会动的地方。道理你不是不懂，这样未必跑得赢通胀，也不是最优解。
+
+但明白归明白，那个感觉就是不走。
+
+因为那不是纯粹的认知问题。更像是一套保护系统，还在按以前学会的方式运作：离危险远一点。
+
+这套系统当年很可能保护过你，或者保护过你的家里。只是事情已经过去了，它还停在原来的警报级别上。
+
+没有人告诉它：可以了，我们已经过来了。`,
+  evidence:`你在这几题上的选择高度一致：
+· 题5  你选了"先不看，看了只会更难受"——第一反应是回避，不是面对
+· 题6  你选了"减了仓"或"基本没关注"——下跌触发的是撤退，不是评估
+· 题8  你选了"有点怕认真面对这件事"——账户本身就是一个你需要保持距离的东西
+
+这三个答案放在一起，说的是同一件事：**你和账户之间，有一段没有处理完的历史。**`,
+  causes:[
+    ['真实的资产缩水经历','某一年账户数字突然少了很多，或者家里出了财务危机，或者你近距离看着某个人从某个位置摔下去。那次之后，身体的反应机制被重新校准——不只记住了"那件事危险"，记住的是"这一类感觉等于危险"。'],
+    ['中国这代人的集体历史记忆','1997、2008，或者更早以另一种形式来的危机。几乎没有哪个中国有资产的家庭，家族史里没有一个"那一年"。这些年份作为身体记忆住在这代人身上。你的谨慎，有一部分是这代人共同的历史刻痕。'],
+    ['安全感的物质化建构','在经历过真实匮乏的环境里长大，钱放在能看见的地方才叫安全。这套逻辑在那个年代保护了很多人。它现在仍然在运作，只是运作的环境已经不同了。']
+  ],
+  causes_note:'这不是你保守，是一套曾经准确的保护系统，还没有收到"可以了"的信号。',
+  greed:'压抑了太久之后会有一次反弹。你守了很久，看着别人赚，某天某个消息来了，积压在身体里那股气找到了出口。那一刻动手的速度会让你自己都吓一跳。那个进场的时机，大概率不是你平时会选的。',
+  fear:'不需要亏很多。有时候只是连跌三天，只是某个让你想起那次的新闻，你的身体先于大脑做了决定。你告诉自己是在止损，是理性判断。但你知道那不完全是真的——是那种感觉你撑不住了，你需要让那个数字从眼前消失。割完之后，有一种奇怪的平静。然后隔一段时间，你重新建仓，等下一次那种感觉来。',
+  action_intro:'你的问题不是不够勇敢，是那个感觉被触发的时候，运作的不是你的判断系统，而是你的生存系统。',
+  action:`识别那个感觉出现的时候——你的身体知道那是什么感觉，胸口的，或者胃里的，或者那种想打开账户又不想打开的状态——当天所有仓位变动自动冻结，48小时后再看。
+
+不是因为48小时之后行情会更好。是因为你的生存系统需要大概这个时间，才能从激活状态回到基线。回到基线之后，你用平时的标准看同样的情况，你会做不同的决定。
+
+你可以自己验证这件事。`,
+  disclaimer:'如果你在市场下跌时能保持平静、没有强烈的"必须离开"的冲动、账户波动不会触发任何身体层面的反应——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。想想上一次你做出一个事后觉得不对的仓位决定——那一刻触发你的，是数字本身，还是那个感觉？
+
+你这种模式，需要的是一套**让你的生存系统找到具体出口的结构**。
+
+不是靠勇气让自己变得更敢，那个感觉不会因为你更勇敢而消失。而是提前把钱分成两个物理隔离的部分：一部分是随时可动的，专门为那个"万一"待命，它放在那里的唯一目的就是让你的身体安心；另一部分是真正在工作的，它待在你日常不触碰的地方，按规则运转。
+
+两件事分开，你的生存系统有了它的出口。你剩下那部分钱，才第一次真正自由。`
+},
+
+暴富:{
+  headline:'你不是贪心。\n是你的身体被一段真实的历史校准过，现在回不去了。',
+  snapshot:`那段时间你知道我在说哪段时间。
+
+钱来得快，快到让你愣了一下。那不只是高兴，是某种接近"原来世界可以是这样的"的震动。那段经历是真实的，不是侥幸，是你在对的时间站在了对的地方。
+
+后来有人跟你说年化8%、分散配置、慢慢来。你坐在那里听，心里有个地方是不动的。不是不相信，是你的身体记得另一种速度。
+
+慢对你来说不只是慢。是一种退步的感觉，是站在窗外看着窗口关上的感觉。
+
+这不是你的错。是那段历史给了你一把尺，而那把尺，在它自己结束之后，量什么都显得太短了。`,
+  evidence:`你在这几题上的选择高度一致：
+· 题3  你选了"投资或投机赚到的"——你的财富积累里有一段快速增值的真实经历
+· 题6  你选了"加仓了，觉得跌下来是机会"——你对速度和机会的敏感度明显高于平均
+· 题9  你选了"实际操作是另一套逻辑"——你知道应该怎么配，但实际在用另一套
+
+这三个答案放在一起，说的是同一件事：**你的参照系是用一段特殊经历校准的，而那段经历已经结束了。**`,
+  causes:[
+    ['真实踩中过历史性窗口','1990年代到2010年代，中国完成了一次人类历史上罕见的资产价格重估。在那个窗口里赚到的钱是真实的，不是侥幸。但那个窗口给你留下的参照系，在它关闭之后，会让"正常速度"永远感觉太慢。'],
+    ['速度感被正向强化的决策系统','在一个真实存在快钱机会的时代里，追速度是正确的。你的系统在那个环境里被训练成"快=对，慢=错过"。这套训练在那个时代是准确的，它后来没有更新。'],
+    ['创业者或生意人的窗口直觉','做过生意的人，骨子里有一个判断：机会窗口是关闭的，要快。这套直觉在做生意时是真理，在资产配置里会让你持续用追窗口的速度管一个需要慢下来的系统。']
+  ],
+  causes_note:'这不是你贪心，是你的系统被一段真实的历史经验校准过，而那段经验本身是例外，不是常态。',
+  greed:'市场开始像那段时间了。某个走势，某种节奏，那个熟悉的气味回来了。你的身体比你的大脑先知道。然后你开始找理由——基本面支撑，技术形态，宏观背景，每一条都说得通。但那个研究是在结论之后开始的。那个结论，是你的身体先做的。',
+  fear:'赌错了一次之后。那次亏损会激活另一段记忆——不是那段快钱的记忆，是更早的那个"东西会消失"的记忆。然后你会突然变得极度保守，和之前的自己判若两人。这两种状态都是你，但两种状态里都没有真正的判断。',
+  action_intro:'你的参照系是用一段特殊历史校准的，那段历史里什么都在涨，速度感是真实的。',
+  action:`计算你的"足够数字"。
+
+不是你想要多少钱。是：按照你现在的生活方式，你需要多少本金，能让本金的自然增长永远覆盖你的支出，你不需要再做任何事？
+
+把这个数字写下来。然后把你现在的资产和这个数字做比较。
+
+如果你已经超过了这个数字，那你现在承担的每一个额外风险，都不是在为你的生活服务——是在为那个被特殊历史校准过的速度感服务。
+
+这不是让你躺平。是让你知道，你在为谁冒险。`,
+  disclaimer:'如果你对年化8%-10%的稳健回报感到满足、不会因为"别人赚得更快"而焦虑、也不会在某个行情像那段时间时产生强烈的进场冲动——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。算一下你的"足够数字"。如果你已经在那个数字附近，想一想你现在还在冒的那些风险，到底是在为什么服务。
+
+你这种模式，不需要压抑那部分人性，压抑只会让它在某个时刻全面反弹。你需要的是**给那部分人性一个有边界的专属容器**。
+
+这个容器叫卫星仓位。把你总资产的10%-15%放进去，在那个格子里，你可以追热点，可以听故事，可以为了饭局上的谈资买单，可以让身体里那个记着快钱速度的部分得到满足。它亏光了，你的基本盘纹丝不动。
+
+剩下那85%-90%，按规则运转，不需要你的情绪参与。
+
+用10%的成本，买断你90%资产的安全。这笔账，你算得过来。`
+},
+
+家族:{
+  headline:'你从来没有一笔钱是只属于自己的。\n不是因为你不够自私，是因为没有人教过你，钱可以只是你的。',
+  snapshot:`你的账户里住着不止一个人。
+
+父母那边要备着，孩子的事要托底，配偶那边也要考虑。你做每一个投资决定，其实都在解一道多元方程。这不是你软弱，是你真实生活着的那个结构。
+
+你从来没有一笔钱是可以真正锁定的——每一笔放进去之前你都会想：万一要动怎么办？
+
+表面上是为家里备着。但有时候，那笔钱家里真正要用的时候，也不一定拿得出手。它只是放着，让你觉得——还行，还有。`,
+  evidence:`你在这几题上的选择高度一致：
+· 题10 你选了"将近一半"或"大部分都算"——账户里的钱，你没有真正区分过哪些是自己的
+· 题11 你选了"没说但有考虑进去"或"跟家人提过"——任何较大的决定，家人都是隐形参与者
+· 题12 你选了"有感觉但说不出"或"没有，一直觉得不够"——"够了"这个状态，因为不只是你一个人在算，所以永远算不清楚
+
+这三个答案放在一起，说的是同一件事：**你管的这笔钱，从来就不只是你一个人的。**`,
+  causes:[
+    ['两千年家族风险共担系统的个体延续','中国的家族制度运转了两千年，核心逻辑是：个人不是风险管理的最小单位，家族才是。这套逻辑在它运转的年代保护了无数人。它在你身上还在运作，只是那个支撑它运作的基础设施——大家族的人口基数、宗族的共同资产池——早已不存在了。'],
+    ['独生子女政策造成的责任压缩','把原本应该分散在三到五个兄弟姐妹身上的家族责任，全部压缩到了你一个人身上。两千年来靠人口基数摊薄风险的系统，突然失去了最核心的运作条件。你被要求一个人承担一个系统性的集体任务。'],
+    ['集体养老体制瓦解后的个体承接','1990年代之后，单位制瓦解，养老变成了家庭的问题。但孝道的文化要求没有随着制度变化而减弱。你被要求承担，但承担的基础设施已经不在了。']
+  ],
+  causes_note:'这不是你放不下，是历史把一个系统性的结构问题，转嫁到了你这个个体身上。',
+  greed:'家里出了事，需要一笔钱，手头不够宽裕的时候。那一刻，你平时的谨慎会突然不见。你会开始看那些平时不会看的东西——收益更高的，回报更快的，听起来更确定的。不是因为你变了，是那笔钱后面站着你放不下的人，你愿意为他们承担一个平时不会替自己承担的风险。这是你最软的地方，也是最容易出事的地方。',
+  fear:'家里有人开口要用钱的时候。不管账户在涨还是在跌，那个时刻你会想赎回——不是因为判断，是因为"家里需要"这四个字，比任何投资逻辑都更有力量。那个赎回的时机，往往不是最优的。',
+  action_intro:'你的家族责任不会消失，也不应该消失。问题不是责任本身，是责任没有容器。',
+  action:`把这笔钱物理分成两个账户，放在不同的平台上。
+
+**第一个账户：家族账户。**
+估算未来五年内家族可能需要用到的钱——父母的医疗备用金，孩子的教育备用金，任何你能预见的可能需求。把这笔钱放在流动性最高的地方，活期或货币基金。它就是待命的，它的任务就是随时可以动。
+
+**第二个账户：你的账户。**
+剩下的那部分，是不属于任何紧急需求的钱。这笔钱的任务只有一个：长期增值。它不需要流动，它不需要待命，它不需要为任何人服务。
+
+两个账户物理分开之后，家族责任有了自己的容器，它不再需要住在你所有的钱里。`,
+  disclaimer:'如果你的账户里有明确分层、家族需求有单独备用金、做投资决定时不需要考虑随时可能的家族提取——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。算一下你账户里，有多少钱是真正可以不动五年的？如果算不出来，这件事本身就是信息。
+
+你这种模式，需要的是一套**让家族责任有自己容器、让你的钱有自己容器的物理隔离结构**。
+
+不是靠意志力在心里区分"这笔是家用的，那笔是投资的"——心里的边界在压力下会消失。而是把这件事做成两个真实存在的账户，放在不同的平台上，物理上就是两件事。
+
+你欠家族的那份，在第一个账户里。你欠自己的那份，在第二个账户里。这是你第一次，把这两件事真正分开。`
+},
+
+依附:{
+  headline:'你不是没有判断力。\n是在你应该发展它的那些年，没有人告诉你这件事跟你有关。',
+  snapshot:`你跟过几个老师了？
+
+每一个开始的时候都觉得找到了，过一段时间又觉得差点什么，然后换。这不是老师的问题，是你在每一个老师那里找的东西，不只是方法论。
+
+很多走到这个模式的人，回头去想，会发现自己其实在找一句话：你这样做是对的，你可以的。
+
+那句话，有些人意识到，从很早以前就没有一个稳定的来源。那个内在坐标，只能长在自己里面，不在任何老师那里——但要发展它，需要时间，也需要机会。
+
+还有一件事：你这代女性独立掌管资产，是历史上从来没有过的事。你的妈妈没有走过这条路，你的外婆更没有。你不是在走一条走偏了的路，你是在走一条从来没有人走过的路。`,
+  evidence:`你在这几题上的选择高度一致：
+· 题5  你选了"联系一个懂投资的人问他怎么看"——第一反应是找外部锚点，不是自己判断
+· 题7  你选了"听了别人的建议，没有按自己的判断来"——后悔的那次，问题在于跟了别人
+· 题17 你选了"大部分说不太清楚"或"没认真想过"——持仓的逻辑，有相当一部分是别人的，不是你自己的
+
+这三个答案放在一起，说的是同一件事：**你的投资决策里，外部声音占的比重，大于你自己的判断。**`,
+  causes:[
+    ['师徒制文化的内化','中国延续两千年的知识传递结构是：找到一个师父，用服从换取传承。这套结构在手工业、医学、艺术里有效，它的逻辑是"师父走过的路比你长"。你把这套逻辑带进了投资——但市场里没有这种师父，任何一个人的判断都无法在市场里稳定有效。'],
+    ['女性财务判断力的缺席培育','在"女人不用管钱"的文化默认里，财务判断力从来没有被当作需要培育的东西。不是你不行，是那个能力从来没有被给过一个真正生长的机会。你现在独立掌管资产，是在做一件文化上完全没有给你留下路径的事。'],
+    ['情感驱动的决策系统与逻辑驱动的市场之间的错配','中国人的决策系统天然是情感和关系驱动的——谁可信，跟着谁走，这套逻辑在人际关系里非常有效。但市场没有脸，没有关系可以判断，你的系统在这里找不到它熟悉的信号。']
+  ],
+  causes_note:'这不是软弱，是你的系统遇到了一个它不是为之设计的场域。',
+  greed:'你信任的那个人说这次可以重仓。你们之间有默契，他之前说的几次都对了。这次仓位重了很多，不是你分析的结果，是你信任的结果。信任本身没错，但如果不是他说，你自己会怎么判断这件事？那个答案你可能从来没有认真找过。',
+  fear:'你信任的那个人开始犹豫，或者群里的风向变了。你没有自己的逻辑支撑你在下跌里站住，所以你走得比任何人都快。进来的时候没有自己的理由，出去的时候也没有。',
+  action_intro:'你的判断力是有的。它只是从来没有被给过一个真正独立运作的机会。',
+  action:`每次听到任何建议，在执行之前，用自己的话写一句话：我为什么认为这个判断是对的？
+
+不是解释老师说了什么，是你自己认为什么。
+
+如果你写不出来，那不是建议不够好，是你还没有形成自己的判断。没有自己判断的行动，不是投资，是托付。
+
+这个练习不是为了让你变聪明，是为了让你的判断力有机会开始生长。`,
+  disclaimer:'如果你的每一笔持仓都能说清楚自己的理由、不需要外部确认就能做决定、换了老师或者群里风向变了也不会影响你的仓位——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。打开你的账户，随便挑一笔持仓，问自己：我为什么还拿着它？如果你能用自己的话说清楚，很好。如果说不清楚，这就是信息。
+
+你这种模式，需要的是一套**规则清晰到不需要外部确认的结构**。
+
+不是找到一个更好的老师，不是加入一个更靠谱的群——那些路你已经走过了，你知道它们的终点在哪里。
+
+而是建立一套属于你自己的配置规则：什么资产，什么比例，什么条件下调整，什么情况下不动。规则写清楚之后，你不需要再问任何人，因为下一步该做什么，规则自己会告诉你。
+
+这套规则，是你第一个真正属于自己的内在坐标。不是老师给的，是你自己设计的。`
+},
+
+完美:{
+  headline:'你不是不敢。\n你是太认真了，认真到给自己设了一个在这里永远达不到的门槛。',
+  snapshot:`很多落到这个模式的人，账户和书单之间，都会隔着一道奇怪的墙。
+
+知识在这边越积越多，行动在那边迟迟不出现。不是不懂，是总想再确认一件事，再等一个更好的时机，再把某个变量想清楚。那个"再"，很容易一路往后延。
+
+还有一件事，你可能已经很熟悉了——
+
+每次错过一个机会，心里都会把那件事重新复盘一遍：如果当时进了，现在会怎样？那个数字，会在某个安静的时候，认认真真算一遍。
+
+这不是简单的拖延。更像是一套很会替你避错的系统，在这里被用得太多了。`,
+  evidence:`你在这几题上的选择高度一致：
+· 题15 你选了"选择阶段就开始犹豫，迟迟不动手"——计划失守的地方，在进场之前就已经开始了
+· 题16 你选了"涨了，没赶上"或"一直没动，还在观望"——"想好了"和"动手了"之间，有一段反复发生的距离
+· 题7  你选了"出场太早或太晚"——连出场的时机，也要等到一个更确定的位置
+
+这三个答案放在一起，说的是同一件事：**你给自己设的"够确定了"门槛，在这里永远达不到。**`,
+  causes:[
+    ['科举文化的"有正确答案"预设','中国精英阶层被1300年的科举训练成同一种思维方式：有正确答案，在你真正确定之前不要落笔。这套预设在它适用的地方是对的。市场没有正确答案——它是一个永远开放、永远不收卷的考场。你等的那个"够确定了"，在这里的学名叫永不到来。'],
+    ['在人生其他领域"想清楚再做"有战绩','那套逻辑让你避开了很多坑，在重大决策上减少了失误。你信任它，因为它交出过结果。这不是错觉，是真实的经验积累。只是它在市场里失效，因为投资的本质是在不确定性里做决策，不是在确定性里做选择。'],
+    ['"还没进场就没有犯错可能"的隐性保护','只要还没进场，就没有真的犯错的可能。你的大脑非常聪明，聪明到会把"我在保护自己不犯错"包装成"我还没想清楚"，让你自己都分不清楚。这两件事住在同一个"再等等"里。']
+  ],
+  causes_note:'这不是胆小，是一套被验证过的谨慎系统，在这里被过度使用了。',
+  greed:'你终于进了，然后它涨了。你会坐在那里看着那个数字，心里出现一个非常具体的念头：要是当时多买一点就好了。你甚至算了一下，如果多买一倍，现在多多少。那次什么都没发生，但那个念头留下来了。下一次机会来的时候，它又出现了，这次更响——上次少买了，这次应该正常买。再下一次，正常买变成了多买一点。',
+  fear:'你发现了一个之前没考虑到的变量。就一个。但它让整个逻辑体系在心里开始松动，你开始不舒服，你清了。不是因为行情，是因为你无法持有一个"逻辑有漏洞"的仓位。那个仓位后来涨了多少，你查过。',
+  action_intro:'你的"还没想清楚"系统不会自己停下来。它的任务就是永远发现新的漏洞。',
+  action:`在开始研究任何一个标的之前，先写下两件事：我愿意为这个机会最多等多久？等到那个时间点，无论研究到什么程度，我都会做一个决定。
+
+不是要你仓促行动，是要你在清醒的时候，给那个"还没想清楚"的系统，设一个截止时间。
+
+截止时间是你给它设的边界，不是敌人。`,
+  disclaimer:'如果你能在研究达到"够了"的程度后立刻执行、不会反复延迟进场时机、做决定后不需要再验证一遍——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。想想你现在账户外面正在研究、但还没有买的那个东西——你已经研究多久了？你给自己设过截止时间吗？
+
+你这种模式，需要的是一套**把"够确定了"这个判断，从你的主观感受里剥离出来的结构**。
+
+不是靠意志力逼自己"别再犹豫了"——那个声音喊了很多次，你知道它没用。而是提前把规则设计成这样：什么情况下买入，买多少，什么时候再平衡，什么情况下止损。规则定好之后，执行的时候你不需要再判断——判断已经在设计规则的那一刻完成了。
+
+你最擅长的是想清楚。这套规则，正是你想清楚之后留下来的东西。`
+},
+
+表演:{
+  headline:'你的账户里有一部分是给别人看的。\n你知道，只是没有人直接说过。',
+  snapshot:`你的仓位里，有两种。
+
+一种你愿意在饭局上提：私募、某个赛道的早期机会、一级市场的项目。说出来有分量，不需要解释，听的人自然明白你在哪个位置上。
+
+另一种你不太主动提：普通指数基金，或者某个收益平平但稳健的东西。道理你懂，但"我就买了点指数"这句话说出口，你自己都觉得无聊。
+
+你大概也知道，那些值得讲的仓位，换算成真实收益，跑不过那些不好意思提的。
+
+但你停不下来。因为停下来意味着放弃一部分你用来定义自己的东西。`,
+  evidence:`最核心的信号只有一个：
+· 题18 你选了"有，有些仓位听起来有眼光，有些显得太普通"——你在区分两类仓位，区分标准不只是收益，而是**说出口的感觉**。这道题，是整份测评里最难撒谎的一道。
+
+另外两个是辅助信号：
+· 题7  你选了"我不太记得有认真后悔过"——亏损之后，有时候更快启动的，是这笔仓位还能不能继续讲得通
+· 题14 你选了"大部分都是这种状态"——那些当初打算长期持有、现在说不清为什么还拿着的仓位，里面有一部分，很可能从一开始就不只是财务判断
+
+这几个信号放在一起，指向同一件事：**你的部分仓位，在做一件投资以外的事。**`,
+  causes:[
+    ['面子作为中国社会信用系统的核心货币','在熟人社会里，面子决定了你能借到多少钱、能接触到什么资源、能在关键时刻找到谁帮你。失去面子不只是丢脸，是实质性地失去社会资本。维护面子，在你所在的圈子里是理性的——你的圈子、资源、机会，都和你在那个网络里的位置有关。'],
+    ['改革开放后财富作为身份表达的集体建构','改革开放前几十年的物质压抑，在解禁后以极强的方式爆发。财富不只是钱，它成了"我在这个时代没有掉队"的证明。"你投了什么"变成了那个圈子里带分量的问题。这不是你个人的虚荣，是你所在的那个时代建构出来的语言。'],
+    ['眼光作为精英圈子的硬通货','在你的圈子里，谁看得早、买得准，是一种真实的社会地位。你的仓位，是你在那个圈子里的名片之一。这套逻辑在那个世界里是准确的——问题是它的账单，由你的实际收益来支付。']
+  ],
+  causes_note:'这不是虚荣，是你真实生活着的那个世界对你的要求。只是手段和目的之间，可能已经悄悄错位了。',
+  greed:'你听说圈子里有人赚了一笔你没赶上的钱。不是很熟，但你们在同一个圈子里。那种感觉不只是可惜，是一种你说不清楚的东西，有点像落后，有点像被看见了某个你不想被看见的地方。下一个消息来的时候，你进场的速度比平时快了很多。你告诉自己是因为这次机会真的好。但你心里有个地方知道，不完全是这个原因。',
+  fear:'那个"有故事"的仓位开始出问题了，而且是在你跟别人聊过它之后。这时候的割肉比普通亏损更难受——你不只是在割仓位，你在把你说出去的那个判断收回来。有时候为了不那么难看，你会比该出的时机晚很多才出，因为你在等一个能说得过去的理由。',
+  action_intro:'你有没有算过，你为那张名片支付的真实成本是多少？',
+  action:`建一个没有人知道的影子账户，只存在于你的记录里。
+
+在这个影子账户里，你按照你真正相信的逻辑配置——不需要好听，不需要有故事，不需要在任何场合提起。纯粹是你认为正确的东西。
+
+每半年，把影子账户的模拟收益和你真实账户的收益放在一起。
+
+那个差值，就是你为面子支付的真实成本。不是要你放弃你的社交世界，是让你知道那个世界的票价是多少。`,
+  disclaimer:'如果你的仓位构成完全基于财务逻辑、不存在"说得出口"和"说不出口"的区分、圈子里别人赚到了某个机会你没跟上也不会影响你的判断——这份报告对你的适配度可能有限。',
+  exit:`镜子已经在你手里了。
+
+先停一秒。打开你的账户，看看那些你"不太好意思提"的仓位，和那些"值得讲"的仓位，分别算一下收益。那个数字，你可能从来没有认真比较过。
+
+你这种模式，不需要放弃你的社交世界，也不需要变成一个无聊的人。你需要的是**一套让两件事互不干扰的结构**。
+
+一个口袋，做无聊的事——宽基指数，再平衡，不看不动，让它按规则慢慢长。这个口袋你不需要有眼光，只需要不去碰它。
+
+另一个口袋，做有意思的事——你想研究的赛道，可以跟朋友聊的标的，让那部分表达欲得到满足。这个口袋亏了，在预算里。
+
+两个口袋分开，无聊的那个替你赚钱，有趣的那个满足你是你。大多数人的问题不是不该有第二个口袋，是两个口袋的钱搞混了——用第一个口袋的钱，做了第二个口袋的事。`
+}
+};
+
+// ══════════════════════════════════════
+// DATA: WELD SENTENCES (12 combinations)
+// ══════════════════════════════════════
+const WELD = {
+  '掌控_完美':'你用研究来掌控，用等待来避险。\n两件事叠在一起，结果只有一个：\n你研究最多，动手最少。\n那笔你研究了三个月、逻辑写了好几页、最后没有买的东西——\n现在在哪里，你知道。',
+  '掌控_补偿':'你需要靠正确的判断证明自己，同时又需要确保不出错。\n这两件事加在一起，你在市场里同时打两场仗：\n一场是跟行情，一场是跟那个内心一直在评判你的声音。\n行情已经够难打了。两场一起打，你比别人累很多。\n而且那第二场，你从来没有真正赢过。',
+  '掌控_依附':'你不想跟着别人走，但自己动手的时候又不踏实。\n结果是：跟了别人，心里不服；自己判断，又站不稳。\n每一笔都在这两边之间耗掉的。\n你的判断力是有的。只是它从来没有被给过一个真正独立运作的机会。',
+  '恐惧_家族':'你需要这笔钱稳稳在那里才安心，但它又随时要待命。\n结果是所有钱都放着——既没有真的备好急用，也没有真的在增值。\n它在那里你不踏实，动了它你更不踏实。\n没有一笔钱真正在工作，它们都在等一个永远不确定会不会来的紧急情况。',
+  '补偿_依附':'你需要外部肯定，也需要别人替你做最后那一步决定。\n这两件事叠在一起，会让你不断跟随老师，但每次跟随，其实都是在找同一件事：\n有人告诉你，你可以，你没问题。\n那件事在老师那里找不到。不是老师不好，是它从来就不在那里。',
+  '补偿_恐惧':'你想在市场上证明自己，但你也真实地被它伤过。\n结果是你和账户之间有一种说不清楚的关系——想靠近，又需要保持距离。\n打开它的时候，你说不清楚是期待还是害怕。\n可能两样都有，混在一起分不清楚。',
+  '暴富_表演':'你的参照系是快钱，你的身份需要有眼光的故事。\n这两件事叠在一起，你特别容易被一种东西打动：有逻辑、有故事、收益看起来不普通。\n它出现的时候你其实知道自己可能又要进去了，但那个逻辑太顺，你找不到足够硬的理由拒绝。\n学费交了不止一次。但下一个出现的时候，感觉还是不一样。',
+  '暴富_掌控':'你见过钱涨多快，同时你又需要每一个决定都说得通。\n于是你一直在找同一种东西：有充分逻辑支撑的高收益机会。\n那个逻辑很多时候是有人提前替你想好的，专门用来让你觉得这次不一样。\n你不是不聪明，是被两件事同时夹住了——快钱的参照系，和"想清楚再动"的自我要求。\n当一个机会同时满足这两件事的时候，你的防线就很难守住。',
+  '完美_依附':'你在等一个更确定的信号，但你也不太信任自己的判断。\n等来的那个信号，往往是从别人那里来的。\n动了结果不好，你会后悔为什么不早点自己判断。\n但下次还是会等，还是从外面找确认。\n这个循环的代价不只是钱——你一直没有机会知道，完全靠自己判断，你能做到什么程度。',
+  '家族_补偿':'你的账户要随时准备为家里兜底，同时你又需要它证明你有能力、你没问题。\n这两件事压在同一笔钱上——它要稳、要灵活、要增值、还要证明你这个人。\n没有一笔钱能同时做这几件事。\n但你一直在要求它。',
+  '恐惧_完美':'你需要更确定才敢动，但你也经历过"想清楚了进去还是错了"的事。\n那次之后，你需要的确定性比以前更高了——不完全是因为在等更好的机会，也是在用"还没想清楚"保护自己，不用再面对那种感觉。\n结果是你在场外站了很久。进场的时机一直没到，但你也说不清楚，什么样的信号出现了你才会动。\n这个问题你可能从来没有认真回答过自己。',
+  '表演_掌控':'你需要组合听起来够聪明，同时你需要对结果有掌控感。\n问题是那些"听起来最聪明"的标的，往往是最难掌控的——进去之前逻辑最顺，进去之后变量最多。\n这个学费你大概已经交过几次了，但每次那个逻辑出现，它听起来还是那么有道理。\n你一直在用掌控感为表演型的选择买单。'
+};
+
+// Low-frequency merge map
+const MERGE = {
+  '掌控_家族':'掌控_依附','掌控_暴富':'暴富_掌控','掌控_恐惧':'掌控_完美',
+  '依附_家族':'补偿_依附','依附_恐惧':'完美_依附',
+  '暴富_补偿':'补偿_恐惧','暴富_恐惧':'补偿_恐惧',
+  '暴富_完美':'暴富_表演','暴富_家族':'家族_补偿',
+  '完美_恐惧':'恐惧_完美','完美_家族':'恐惧_家族','完美_补偿':'掌控_完美',
+  '表演_依附':'暴富_表演','表演_补偿':'表演_掌控',
+  '表演_恐惧':'表演_掌控','表演_家族':'家族_补偿'
+};
+const HIGH_RISK_MERGE = ['暴富_完美','表演_依附','表演_补偿','表演_恐惧','表演_家族'];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let currentQ = 0;
+let answers = new Array(18).fill(null);
+
+// ══════════════════════════════════════
+// QUIZ LOGIC
+// ══════════════════════════════════════
+function startQuiz(){
+  showScreen('s-quiz');
+  renderQ(0);
+}
+
+function renderQ(idx){
+  currentQ = idx;
+  const q = QUESTIONS[idx];
+  document.getElementById('q-group-label').textContent = q.group;
+  document.getElementById('q-counter').textContent = `${idx+1} / ${QUESTIONS.length}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.opts.forEach((o,i)=>{
+    const labels = 'ABCDEF';
+    const btn = document.createElement('button');
+    btn.className = 'opt' + (answers[idx]===i ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-label">${labels[i]}</span>${o}`;
+    btn.onclick = ()=>selectOpt(i);
+    opts.appendChild(btn);
+  });
+
+  const pct = ((idx)/18)*100;
+  document.getElementById('progress-bar').style.width = pct+'%';
+
+  const back = document.getElementById('btn-back');
+  back.style.visibility = idx===0 ? 'hidden' : 'visible';
+
+  const next = document.getElementById('btn-next');
+  next.textContent = idx === QUESTIONS.length-1 ? '完成测评' : '下一题';
+  next.className = 'btn-next' + (answers[idx]!==null ? ' ready' : '');
+
+  // scroll to top
+  document.getElementById('s-quiz').querySelector('.quiz-body').scrollTop = 0;
+}
+
+function selectOpt(i){
+  answers[currentQ] = i;
+  document.querySelectorAll('.opt').forEach((el,idx)=>{
+    el.classList.toggle('selected', idx===i);
+  });
+  document.getElementById('btn-next').classList.add('ready');
+}
+
+function prevQ(){
+  if(currentQ>0) renderQ(currentQ-1);
+}
+
+function nextQ(){
+  if(answers[currentQ]===null) return;
+  if(currentQ === QUESTIONS.length-1){
+    calculate();
+  } else {
+    renderQ(currentQ+1);
+  }
+}
+
+// ══════════════════════════════════════
+// SCORING
+// ══════════════════════════════════════
+function calculate(){
+  showScreen('s-loading');
+  document.getElementById('progress-bar').style.width = '95%';
+  setTimeout(()=>{
+    const result = computeResult();
+    renderResult(result);
+    showScreen('s-result');
+    document.getElementById('progress-bar').style.width = '100%';
+  }, 2200);
+}
+
+function computeResult(){
+  const scores = {};
+  MODES.forEach(m=>scores[m]=0);
+
+  // Score questions 2-17 (题1-题16)
+  for(let qi=2; qi<=17; qi++){
+    const ans = answers[qi];
+    if(ans===null) continue;
+    const rowIdx = qi-2; // 0-indexed in SM
+    const row = SM[rowIdx];
+    if(ans < row.length){
+      const delta = row[ans];
+      if(delta) Object.entries(delta).forEach(([m,v])=>{ scores[m]=(scores[m]||0)+v; });
+    }
+  }
+
+  // Special rule: Q17 (题16, idx 17) select C → 表演 gets boost
+  if(answers[17]===2){ // option C (0-indexed)
+    scores['表演'] = Math.max(scores['表演'], Math.max(...Object.values(scores))-1);
+  }
+
+  // Sort modes by score
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  let primary = sorted[0][0];
+  let secondary = sorted[1][0];
+
+  // Special rule: 家族 prefers secondary
+  if(primary==='家族' && sorted.length>1){
+    primary = sorted[1][0];
+    secondary = '家族';
+  }
+
+  // Tie-breaking via hard trigger questions
+  if(sorted[0][1]===sorted[1][1]){
+    const hardAnswers = [answers[4], answers[14], answers[15]];
+    const hardScores = {};
+    MODES.forEach(m=>hardScores[m]=0);
+    [4,14,15].forEach((qi,i)=>{
+      const ans = hardAnswers[i];
+      if(ans===null) return;
+      const row = SM[qi-2];
+      if(ans<row.length){
+        const d = row[ans];
+        if(d) Object.entries(d).forEach(([m,v])=>{hardScores[m]+=v;});
+      }
+    });
+    if(hardScores[primary] < hardScores[secondary]){
+      [primary,secondary] = [secondary,primary];
+    }
+  }
+
+  return {primary, secondary, scores};
+}
+
+// ══════════════════════════════════════
+// RENDER RESULT
+// ══════════════════════════════════════
+function getWeld(p,s){
+  const key1 = `${p}_${s}`;
+  const key2 = `${s}_${p}`;
+  if(WELD[key1]) return {text:WELD[key1], isRisk:false};
+  if(WELD[key2]) return {text:WELD[key2], isRisk:false};
+  // try merge
+  const mk1 = MERGE[key1] || MERGE[key2];
+  if(mk1 && WELD[mk1]) return {text:WELD[mk1], isRisk:HIGH_RISK_MERGE.includes(key1)||HIGH_RISK_MERGE.includes(key2)};
+  return null;
+}
+
+function md(text){
+  // minimal markdown: **bold**
+  return text.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+}
+
+function renderResult({primary, secondary, scores}){
+  const r = REPORTS[primary];
+  const weld = getWeld(primary, secondary);
+
+  let html = `
+  <div class="result-hero">
+    <div class="result-label">你的财富心理主模式</div>
+    <div class="result-mode">${MODE_FULL[primary]}</div>
+    <div class="result-sub">副模式：${MODE_FULL[secondary]}</div>
+    <span class="result-tag">靓姐的财富认知 · 决策失真入口识别</span>
+  </div>
+  <div class="result-body">
+
+    <!-- HEADLINE -->
+    <div class="r-section">
+      <div class="r-headline">${r.headline.replace(/\n/g,'<br>')}</div>
+    </div>
+
+    <!-- SNAPSHOT -->
+    <div class="r-section">
+      <div class="r-title">▎行为快照</div>
+      <div class="r-text">${md(r.snapshot)}</div>
+    </div>
+
+    <!-- EVIDENCE -->
+    <div class="r-section">
+      <div class="r-title">▎你的判定依据</div>
+      <div class="r-text">${md(r.evidence)}</div>
+    </div>`;
+
+  // WELD SENTENCE
+  if(weld){
+    html += `
+    <div class="r-section">
+      <div class="r-title">▎副模式叠加</div>
+      ${weld.isRisk ? '<div class="r-text" style="font-size:13px;color:var(--text3);margin-bottom:8px;">你的组合在高频案例里较少见，以下描述是最接近的参考，可能不完全吻合——</div>' : ''}
+      <div class="weld-box">
+        <div class="weld-label">「以下是 ${MODE_FULL[primary]} × ${MODE_FULL[secondary]} 叠加时最常见的行为干扰，供参考——」</div>
+        <div class="weld-text">${weld.text}</div>
+      </div>
+    </div>`;
+  }
+
+  // CAUSES
+  html += `
+    <div class="r-section">
+      <div class="r-title">▎为什么你会这样</div>
+      <div class="r-text" style="margin-bottom:20px">这种模式常见几种来源，你未必都占，但至少有一条在起作用。</div>`;
+  r.causes.forEach(([title,body],i)=>{
+    html += `<div class="cause-item">
+      <div class="cause-num">来源 ${i+1}</div>
+      <div class="r-text"><b>${title}</b></div>
+      <div class="r-text">${body}</div>
+    </div>`;
+  });
+  html += `<div class="r-text" style="color:var(--text3);font-style:italic">${r.causes_note}</div>
+    </div>`;
+
+  // TRIGGERS
+  html += `
+    <div class="r-section">
+      <div class="r-title">▎你的失控时刻</div>
+      <div style="margin-bottom:16px">
+        <span class="trigger-dir trigger-greed">→ 向贪婪那边</span>
+        <div class="r-text" style="margin-top:10px">${r.greed}</div>
+      </div>
+      <div>
+        <span class="trigger-dir trigger-fear">→ 向恐惧那边</span>
+        <div class="r-text" style="margin-top:10px">${r.fear}</div>
+      </div>
+    </div>`;
+
+  // ACTION
+  html += `
+    <div class="r-section">
+      <div class="r-title">▎执行层</div>
+      <div class="r-text">${r.action_intro}</div>
+      <div class="action-box">
+        <div class="action-rule">机制只有一条</div>
+        <div class="r-text">${md(r.action)}</div>
+      </div>
+    </div>`;
+
+  // DISCLAIMER
+  html += `
+    <div class="r-section">
+      <div class="r-title">▎反证条款</div>
+      <div class="disclaimer-box">
+        <div class="disclaimer-text">${r.disclaimer}</div>
+      </div>
+    </div>`;
+
+  // EXIT
+  html += `
+    <div class="r-section">
+      <div class="r-title">▎出口</div>
+      <div class="exit-text">${md(r.exit)}</div>
+    </div>`;
+
+  // CTA
+  html += `
+    <div class="cta-section">
+      <div class="cta-intro">到这里，这份49元测评真正解决的，是一件事：
+
+你终于知道，自己不是不懂，而是总在某一种地方失守。
+
+但知道自己从哪里漏水，和把整套管道重新铺好，不是一回事。</div>
+      <div class="cta-divider">
+        <div class="cta-card">
+          <div class="cta-price">¥49</div>
+          <div class="cta-desc">镜子<br>看见你的漏洞在哪</div>
+        </div>
+        <div class="cta-card active">
+          <div class="cta-price">¥599</div>
+          <div class="cta-desc">图纸<br>搭出能长期活下来的结构</div>
+        </div>
+      </div>
+      <div class="cta-arrow">你现在看的是镜子 · 图纸在下方↓</div>
+      <button class="btn-cta">进入地图 · 599元</button>
+      <button class="btn-restart" onclick="restartQuiz()">重新测评</button>
+    </div>`;
+
+  // ENDING
+  html += `
+    <div class="ending-section">
+      <div class="ending-text">这份测评不是为了证明你有问题。
+
+它更像是在帮你确认：你过去反复卡住的地方，不一定是因为你不够努力，也不一定是因为你不够懂。
+
+很多时候，只是因为你一直在用错误的方式，处理一个本来应该交给结构去解决的问题。</div>
+      <div class="ending-close">看到这里，镜子就够了。\n接下来要不要拿图纸，是另一件事。</div>
+    </div>
+  </div>`;
+
+  document.getElementById('result-content').innerHTML = html;
+  document.getElementById('s-result').scrollTop = 0;
+}
+
+function restartQuiz(){
+  answers = new Array(18).fill(null);
+  currentQ = 0;
+  document.getElementById('progress-bar').style.width = '0';
+  showScreen('s-intro');
+}
+
+// ══════════════════════════════════════
+// SCREEN MANAGER
+// ══════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.remove('active');
+  });
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.scrollTop = 0;
+}
+</script>
+</body>
+</html>
