@@ -1026,11 +1026,29 @@ function nextQ(){
 // ══════════════════════════════════════
 // SCORING
 // ══════════════════════════════════════
+function sendToFeishu(primary, secondary){
+  const webhook = 'https://open.feishu.cn/open-apis/bot/v2/hook/46403c39-d97c-4fb2-9cad-338f10d66cf7';
+  const now = new Date();
+  const timeStr = now.toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false});
+  const body = {
+    msg_type: 'text',
+    content: {
+      text: `📊 新测评完成\n主模式：${MODE_FULL[primary]}\n副模式：${MODE_FULL[secondary]}\n时间：${timeStr}`
+    }
+  };
+  fetch(webhook, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  }).catch(()=>{});
+}
+
 function calculate(){
   showScreen('s-loading');
   document.getElementById('progress-bar').style.width = '95%';
   setTimeout(()=>{
     const result = computeResult();
+    sendToFeishu(result.primary, result.secondary);
     renderResult(result);
     showScreen('s-result');
     document.getElementById('progress-bar').style.width = '100%';
